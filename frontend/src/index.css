@@ -20,6 +20,8 @@ transform:translateY(0);
 }
 html{
   scroll-behavior:smooth;
+  /* Same colour as the App container, so overscroll never shows the default white canvas. */
+  background-color:#0a0a0f;
 }
 
 body{

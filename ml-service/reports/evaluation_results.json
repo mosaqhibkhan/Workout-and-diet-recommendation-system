@@ -1,0 +1,332 @@
+{
+  "dataset": {
+    "type": "SYNTHETIC",
+    "rows_after_dedup": 1900,
+    "train_rows": 1520,
+    "test_rows": 380
+  },
+  "label_audit": {
+    "max_distinct_labels_per_goal_experience_cell": 1,
+    "label_is_deterministic_in_goal_and_experience": true,
+    "fraction_rows_matching_rule": 1.0
+  },
+  "model_selection": {
+    "selected_model": "decision_tree_goal_experience",
+    "selection_rule": "highest mean 5-fold CV macro-F1 on the training split among learned candidates; candidates within 0.005 are tied and the simplest wins",
+    "cross_validation_on_train_split": {
+      "dummy_most_frequent": {
+        "type": "baseline",
+        "cv_accuracy_mean": 0.123,
+        "cv_accuracy_std": 0.0016,
+        "cv_macro_f1_mean": 0.0243,
+        "cv_macro_f1_std": 0.0003
+      },
+      "dummy_stratified": {
+        "type": "baseline",
+        "cv_accuracy_mean": 0.1079,
+        "cv_accuracy_std": 0.0109,
+        "cv_macro_f1_mean": 0.108,
+        "cv_macro_f1_std": 0.0103
+      },
+      "rule_lookup": {
+        "type": "baseline",
+        "cv_accuracy_mean": 1.0,
+        "cv_accuracy_std": 0.0,
+        "cv_macro_f1_mean": 1.0,
+        "cv_macro_f1_std": 0.0
+      },
+      "decision_tree_goal_experience": {
+        "type": "learned",
+        "cv_accuracy_mean": 1.0,
+        "cv_accuracy_std": 0.0,
+        "cv_macro_f1_mean": 1.0,
+        "cv_macro_f1_std": 0.0
+      },
+      "logistic_regression_goal_experience": {
+        "type": "learned",
+        "cv_accuracy_mean": 1.0,
+        "cv_accuracy_std": 0.0,
+        "cv_macro_f1_mean": 1.0,
+        "cv_macro_f1_std": 0.0
+      },
+      "random_forest_goal_experience": {
+        "type": "learned",
+        "cv_accuracy_mean": 1.0,
+        "cv_accuracy_std": 0.0,
+        "cv_macro_f1_mean": 1.0,
+        "cv_macro_f1_std": 0.0
+      },
+      "random_forest_numeric_only": {
+        "type": "learned",
+        "cv_accuracy_mean": 0.0618,
+        "cv_accuracy_std": 0.0132,
+        "cv_macro_f1_mean": 0.0607,
+        "cv_macro_f1_std": 0.0128
+      },
+      "logistic_regression_all_features": {
+        "type": "learned",
+        "cv_accuracy_mean": 1.0,
+        "cv_accuracy_std": 0.0,
+        "cv_macro_f1_mean": 1.0,
+        "cv_macro_f1_std": 0.0
+      },
+      "random_forest_all_features": {
+        "type": "learned",
+        "cv_accuracy_mean": 1.0,
+        "cv_accuracy_std": 0.0,
+        "cv_macro_f1_mean": 1.0,
+        "cv_macro_f1_std": 0.0
+      }
+    }
+  },
+  "deployed_model": {
+    "estimator": "DecisionTreeClassifier",
+    "features_used": [
+      "Goal_Cut",
+      "Goal_Bulk",
+      "Goal_Maintain",
+      "Experience_Beginner",
+      "Experience_Intermediate",
+      "Experience_Advanced"
+    ],
+    "depth": 4,
+    "leaves": 9,
+    "rules": "|--- Experience_Beginner <= 0.50\n|   |--- Goal_Cut <= 0.50\n|   |   |--- Goal_Bulk <= 0.50\n|   |   |   |--- Experience_Advanced <= 0.50\n|   |   |   |   |--- class: Maintenance_Intermediate\n|   |   |   |--- Experience_Advanced >  0.50\n|   |   |   |   |--- class: Maintenance_Advanced\n|   |   |--- Goal_Bulk >  0.50\n|   |   |   |--- Experience_Intermediate <= 0.50\n|   |   |   |   |--- class: MuscleGain_Advanced\n|   |   |   |--- Experience_Intermediate >  0.50\n|   |   |   |   |--- class: MuscleGain_Intermediate\n|   |--- Goal_Cut >  0.50\n|   |   |--- Experience_Advanced <= 0.50\n|   |   |   |--- class: FatLoss_Intermediate\n|   |   |--- Experience_Advanced >  0.50\n|   |   |   |--- class: FatLoss_Advanced\n|--- Experience_Beginner >  0.50\n|   |--- Goal_Maintain <= 0.50\n|   |   |--- Goal_Cut <= 0.50\n|   |   |   |--- class: MuscleGain_Beginner\n|   |   |--- Goal_Cut >  0.50\n|   |   |   |--- class: FatLoss_Beginner\n|   |--- Goal_Maintain >  0.50\n|   |   |--- class: Maintenance_Beginner\n"
+  },
+  "holdout_test": {
+    "deployed_model": {
+      "accuracy": 1.0,
+      "macro_precision": 1.0,
+      "macro_recall": 1.0,
+      "macro_f1": 1.0
+    },
+    "rule_baseline": {
+      "accuracy": 1.0,
+      "macro_precision": 1.0,
+      "macro_recall": 1.0,
+      "macro_f1": 1.0
+    },
+    "dummy_stratified": {
+      "accuracy": 0.1,
+      "macro_precision": 0.0995,
+      "macro_recall": 0.1001,
+      "macro_f1": 0.0989
+    },
+    "deployed_vs_rule_agreement": 1.0,
+    "deployed_per_class": {
+      "FatLoss_Advanced": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 43.0
+      },
+      "FatLoss_Beginner": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 45.0
+      },
+      "FatLoss_Intermediate": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 42.0
+      },
+      "Maintenance_Advanced": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 37.0
+      },
+      "Maintenance_Beginner": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 47.0
+      },
+      "Maintenance_Intermediate": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 41.0
+      },
+      "MuscleGain_Advanced": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 38.0
+      },
+      "MuscleGain_Beginner": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 45.0
+      },
+      "MuscleGain_Intermediate": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1-score": 1.0,
+        "support": 42.0
+      }
+    },
+    "deployed_confusion_matrix": {
+      "labels": [
+        "FatLoss_Advanced",
+        "FatLoss_Beginner",
+        "FatLoss_Intermediate",
+        "Maintenance_Advanced",
+        "Maintenance_Beginner",
+        "Maintenance_Intermediate",
+        "MuscleGain_Advanced",
+        "MuscleGain_Beginner",
+        "MuscleGain_Intermediate"
+      ],
+      "matrix": [
+        [
+          43,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          45,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          42,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          37,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          47,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          41,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          38,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          45,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          42
+        ]
+      ]
+    }
+  },
+  "feature_relevance": {
+    "model": "random_forest_all_features, fitted on the training split",
+    "permutation_importance_macro_f1_drop": {
+      "Weight": {
+        "mean": 0.0,
+        "std": 0.0
+      },
+      "Height": {
+        "mean": 0.0,
+        "std": 0.0
+      },
+      "BMI": {
+        "mean": 0.0,
+        "std": 0.0
+      },
+      "Goal": {
+        "mean": 0.6699,
+        "std": 0.0229
+      },
+      "Experience": {
+        "mean": 0.6697,
+        "std": 0.0184
+      }
+    },
+    "grouped_numeric_permutation_macro_f1_drop": {
+      "mean": 0.0,
+      "std": 0.0
+    },
+    "impurity_importance": {
+      "Goal_Cut": 0.1515,
+      "Goal_Bulk": 0.1556,
+      "Goal_Maintain": 0.1605,
+      "Experience_Beginner": 0.1863,
+      "Experience_Intermediate": 0.1744,
+      "Experience_Advanced": 0.1561,
+      "Weight": 0.0047,
+      "Height": 0.0047,
+      "BMI": 0.0062
+    }
+  },
+  "input_sweep_deployed_model": {
+    "grid_points": 96444,
+    "max_distinct_plans_within_a_goal_experience_cell": 1,
+    "predictions_differing_from_rule": 0
+  }
+}

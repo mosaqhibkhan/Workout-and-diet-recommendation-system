@@ -1,0 +1,4 @@
+# Keep generated data and model artifacts byte-identical across operating systems
+ml-service/data/*.csv -text
+*.joblib binary
+*.pkl binary

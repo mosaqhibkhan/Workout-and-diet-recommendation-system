@@ -1,0 +1,9 @@
+# Tested with Python 3.13.2 (pandas 3.x requires Python >= 3.11).
+# scikit-learn is pinned because a saved model should be loaded with the
+# same version that trained it.
+Flask==3.1.0
+scikit-learn==1.7.2
+scipy==1.15.2
+numpy==2.2.4
+pandas==3.0.2
+joblib==1.4.2

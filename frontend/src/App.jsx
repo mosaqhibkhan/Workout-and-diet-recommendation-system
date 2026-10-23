@@ -1,5 +1,5 @@
 import Header from "./components/layout/Header";
-import WorkoutForm from "./components/features/Workout/WorkoutForm";
+import WorkoutForm from "./components/features/workout/WorkoutForm";
 
 function App() {
   return (

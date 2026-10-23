@@ -4,13 +4,13 @@ const Header = () => {
 
       <div className="mb-6 inline-flex rounded-full border border-lime-300/20 bg-lime-300/10 px-5 py-2 text-xs font-semibold uppercase tracking-[0.15em] text-lime-300">
 
-        AI Powered
+        Workout &amp; Diet Planner
 
       </div>
 
       <h1 className="mb-4 text-6xl font-black uppercase leading-none tracking-wider sm:text-8xl">
 
-        Personalized
+        Your Weekly
 
         <br />
 
@@ -24,7 +24,7 @@ const Header = () => {
 
       <p className="mx-auto max-w-md text-gray-400 leading-7">
 
-        Enter your stats and get a custom weekly workout and diet plan built using Machine Learning.
+        Choose your goal and experience level to get a weekly workout schedule and a matching diet template.
 
       </p>
 

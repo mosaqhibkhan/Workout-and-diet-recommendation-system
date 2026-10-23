@@ -4,7 +4,16 @@ const axios = require("axios");
 
 const app = express();
 
-app.use(cors());
+/* ─── Configuration (environment variables, see .env.example) ────────────── */
+
+const PORT = Number(process.env.PORT) || 3000;
+const ML_SERVICE_URL = process.env.ML_SERVICE_URL || "http://127.0.0.1:5001";
+// Comma-separated list of allowed browser origins. Unset allows any origin.
+const CORS_ORIGINS = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(",").map((origin) => origin.trim())
+  : null;
+
+app.use(cors(CORS_ORIGINS ? { origin: CORS_ORIGINS } : undefined));
 app.use(express.json());
 
 /* ─── Workout Plans ───────────────────────────────────────────────────────── */
@@ -213,20 +222,24 @@ app.post("/predict", async (req, res) => {
     /* ─── Call Python ML API ───────────────── */
 
     const response = await axios.post(
-      "http://127.0.0.1:5001/ml-predict",
+      `${ML_SERVICE_URL}/ml-predict`,
       {
         weight,
         height,
         goal,
         experience
-      }
+      },
+      { timeout: 10000 }
     );
 
-    const plan_name = response.data.plan;
+    const plan_name = response.data && response.data.plan;
 
-    const workout =
-      WORKOUT_PLANS[plan_name] ||
-      { Error: "Plan not found in dictionary." };
+    // The frontend renders result.plan directly, so never pass an unknown plan through.
+    if (typeof plan_name !== "string" || !Object.hasOwn(WORKOUT_PLANS, plan_name)) {
+      throw new Error(`Unexpected plan from ML service: ${JSON.stringify(plan_name)}`);
+    }
+
+    const workout = WORKOUT_PLANS[plan_name];
 
     const diet =
       DIET_PLANS[goal] || {};
@@ -257,10 +270,30 @@ app.get("/health", (req, res) => {
   });
 });
 
+/* ─── Error Handling ─────────────────────────────────────────────────────── */
+
+// Return JSON (not Express's default HTML page) so the frontend can show the message.
+app.use((err, req, res, next) => {
+  if (err.type === "entity.parse.failed") {
+    return res.status(400).json({
+      error: "Invalid JSON body."
+    });
+  }
+
+  const status = err.status || 500;
+  if (status >= 500) console.error(err);
+
+  return res.status(status).json({
+    error: status < 500 ? err.message : "Internal server error"
+  });
+});
+
 /* ─── Start Server ───────────────────────────────────────────────────────── */
 
-const PORT = 3000;
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+module.exports = { app, WORKOUT_PLANS, DIET_PLANS };
